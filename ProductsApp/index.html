@@ -1,0 +1,368 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .segment {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #ddd;
+        }
+
+        .get-segment {
+            border-left-color: #28a745;
+        }
+
+        .post-segment {
+            border-left-color: #007bff;
+        }
+
+        .put-segment {
+            border-left-color: #ffc107;
+        }
+
+        .delete-segment {
+            border-left-color: #dc3545;
+        }
+
+        .method {
+            display: inline-block;
+            font-weight: bold;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .get {
+            background-color: #28a745;
+        }
+
+        .post {
+            background-color: #007bff;
+        }
+
+        .put {
+            background-color: #ffc107;
+        }
+
+        .delete {
+            background-color: #dc3545;
+        }
+
+        .url {
+            font-family: monospace;
+            background-color: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 3px;
+            margin: 0 10px;
+        }
+
+        .description {
+            display: block;
+            margin-top: 5px;
+            margin-left: 10px;
+            color: #666;
+        }
+
+        .action-button {
+            margin-top: 10px;
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            border: none;
+            color: white;
+        }
+
+        .get-button {
+            background-color: #28a745;
+        }
+
+        .post-button {
+            background-color: #007bff;
+        }
+
+        .put-button {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+        }
+
+        .response {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 3px;
+            display: none;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 8px;
+            margin: 5px 0;
+            width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .input-group {
+            margin: 15px 0;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        .segment-title {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>Products API Documentation</h1>
+
+    <!-- GET All Products Segment -->
+    <div class="segment get-segment">
+        <div class="segment-title">
+            <h2>GET All Products</h2>
+        </div>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="url">/api/products</span>
+            <span class="description">Returns the full products catalog</span>
+            <div>
+                <button class="action-button get-button" onclick="getAllProducts()">Try it</button>
+                <div id="getAllResponse" class="response"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GET Product by ID Segment -->
+    <div class="segment get-segment">
+        <div class="segment-title">
+            <h2>GET Product by ID</h2>
+        </div>
+
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="url">/api/products/{id:int}</span>
+            <span class="description">Returns the particular product for the input id</span>
+            <div class="input-group">
+                <input type="number" id="getProductId" placeholder="Enter product ID">
+                <button class="action-button get-button" onclick="getProduct()">Try it</button>
+                <div id="getProductResponse" class="response"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POST Segment -->
+    <div class="segment post-segment">
+        <div class="segment-title">
+            <h2>POST Endpoint</h2>
+        </div>
+
+        <div class="endpoint">
+            <span class="method post">POST</span>
+            <span class="url">/api/products</span>
+            <span class="description">Creates a new product object</span>
+            <div class="input-group">
+                <input type="text" id="newProductName" placeholder="Product name">
+                <input type="number" id="newProductPrice" placeholder="Price">
+                <input type="text" id="newProductCategory" placeholder="Category">
+                <button class="action-button post-button" onclick="createProduct()">Try it</button>
+                <div id="postResponse" class="response"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PUT Segment -->
+    <div class="segment put-segment">
+        <div class="segment-title">
+            <h2>PUT Endpoint</h2>
+        </div>
+
+        <div class="endpoint">
+            <span class="method put">PUT</span>
+            <span class="url">/api/products/{id:int}</span>
+            <span class="description">Updates an existing product object by Id</span>
+            <div class="input-group">
+                <input type="number" id="updateProductId" placeholder="Product ID">
+                <input type="text" id="updateProductName" placeholder="New name">
+                <input type="number" id="updateProductPrice" placeholder="New price">
+                <input type="text" id="updateProductCategory" placeholder="New category">
+                <button class="action-button put-button" onclick="updateProduct()">Try it</button>
+                <div id="putResponse" class="response"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DELETE Segment -->
+    <div class="segment delete-segment">
+        <div class="segment-title">
+            <h2>DELETE Endpoint</h2>
+        </div>
+
+        <div class="endpoint">
+            <span class="method delete">DELETE</span>
+            <span class="url">/api/products/{id:int}</span>
+            <span class="description">Deletes an existing product with the input id</span>
+            <div class="input-group">
+                <input type="number" id="deleteProductId" placeholder="Product ID">
+                <button class="action-button delete-button" onclick="deleteProduct()">Try it</button>
+                <div id="deleteResponse" class="response"></div>
+            </div>
+        </div>
+    </div>
+    <script>const baseUrl = '/api/products';
+
+        function showResponse(elementId, data) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function getAllProducts() {
+            try {
+                const response = await fetch(baseUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                showResponse('getAllResponse', data);
+            } catch (error) {
+                showResponse('getAllResponse', { error: error.message });
+            }
+        }
+
+        async function getProduct() {
+            const id = document.getElementById('getProductId').value;
+            try {
+                const response = await fetch(`${baseUrl}/${id}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                showResponse('getProductResponse', data);
+            } catch (error) {
+                showResponse('getProductResponse', { error: error.message });
+            }
+        }
+
+        async function createProduct() {
+            const name = document.getElementById('newProductName').value;
+            const price = document.getElementById('newProductPrice').value;
+            const category = document.getElementById('newProductCategory').value;
+            try {
+                const response = await fetch(baseUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        price: parseFloat(price),
+                        category
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || `HTTP error! status: ${response.status}`);
+                }
+
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const data = await response.json();
+                    showResponse('postResponse', data);
+                } else {
+                    showResponse('postResponse', { message: 'Operation successful' });
+                }
+            } catch (error) {
+                showResponse('postResponse', { error: error.message });
+            }
+        }
+
+        async function updateProduct() {
+            const id = document.getElementById('updateProductId').value;
+            const name = document.getElementById('updateProductName').value;
+            const price = document.getElementById('updateProductPrice').value;
+            const category = document.getElementById('updateProductCategory').value;
+            try {
+                const response = await fetch(`${baseUrl}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        price: parseFloat(price),
+                        category
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || `HTTP error! status: ${response.status}`);
+                }
+
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const data = await response.json();
+                    showResponse('putResponse', data);
+                } else {
+                    showResponse('putResponse', { message: 'Update successful' });
+                }
+            } catch (error) {
+                showResponse('putResponse', { error: error.message });
+            }
+        }
+
+        async function deleteProduct() {
+            const id = document.getElementById('deleteProductId').value;
+            try {
+                const response = await fetch(`${baseUrl}/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || `HTTP error! status: ${response.status}`);
+                }
+
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const data = await response.json();
+                    showResponse('deleteResponse', data);
+                } else {
+                    showResponse('deleteResponse', { message: 'Delete successful' });
+                }
+            } catch (error) {
+                showResponse('deleteResponse', { error: error.message });
+            }
+        }</script>
+</body>
+</html>
