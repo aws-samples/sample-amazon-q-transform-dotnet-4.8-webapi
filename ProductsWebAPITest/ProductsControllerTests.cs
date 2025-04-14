@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using ProductsApp.Controllers;
-using ProductsApp.Models;
-using ProductsApp.Service;
+using ProductsWebAPI.Controllers;
+using ProductsWebAPI.Models;
+using ProductsWebAPI.Service;
 using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Results;

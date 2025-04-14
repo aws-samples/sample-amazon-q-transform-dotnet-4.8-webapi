@@ -94,7 +94,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ProductsApp\ProductsWebAPI.csproj">
+    <ProjectReference Include="..\ProductsWebAPI\ProductsWebAPI.csproj">
       <Project>{662767a3-3dd4-49a4-857b-bad0146ccb95}</Project>
       <Name>ProductsWebAPI</Name>
     </ProjectReference>

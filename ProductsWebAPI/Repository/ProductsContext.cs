@@ -1,7 +1,7 @@
 ﻿using System.Data.Entity;
-using ProductsApp.Models;
+using ProductsWebAPI.Models;
 
-namespace ProductsApp.Repository
+namespace ProductsWebAPI.Repository
 {
     public class ProductsContext : DbContext
     {

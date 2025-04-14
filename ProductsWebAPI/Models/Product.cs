@@ -1,4 +1,4 @@
-﻿namespace ProductsApp.Models
+﻿namespace ProductsWebAPI.Models
 {
     public class Product
     {

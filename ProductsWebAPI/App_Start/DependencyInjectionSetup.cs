@@ -1,11 +1,11 @@
 ﻿using System.Web.Http;
-using ProductsApp.Service;
+using ProductsWebAPI.Service;
 using SimpleInjector;
 using SimpleInjector.Integration.WebApi;
 using SimpleInjector.Lifestyles;
 
 
-namespace ProductsApp.App_Start
+namespace ProductsWebAPI.App_Start
 {
     public static class DependencyInjectionSetup
     {

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ProductsApp.Models;
-using ProductsApp.Repository;
+using ProductsWebAPI.Models;
+using ProductsWebAPI.Repository;
 
-namespace ProductsApp.Service
+namespace ProductsWebAPI.Service
 {
     public class ProductsService : IProductsService
     {

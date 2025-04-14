@@ -1,7 +1,7 @@
 ﻿using System.Web.Http;
 
 
-namespace ProductsApp
+namespace ProductsWebAPI
 {
     public static class WebApiConfig
     {

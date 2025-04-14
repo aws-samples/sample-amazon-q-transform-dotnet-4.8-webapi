@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Web.Http;
-using ProductsApp.Models;
-using ProductsApp.Service;
+using ProductsWebAPI.Models;
+using ProductsWebAPI.Service;
 
 
-namespace ProductsApp.Controllers
+namespace ProductsWebAPI.Controllers
 {
     public class ProductsController : ApiController
     {

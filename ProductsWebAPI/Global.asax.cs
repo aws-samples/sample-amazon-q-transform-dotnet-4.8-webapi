@@ -1,7 +1,7 @@
 using System.Web.Http;
-using ProductsApp.App_Start;
+using ProductsWebAPI.App_Start;
 
-namespace ProductsApp
+namespace ProductsWebAPI
 {
     public class WebApiApplication : System.Web.HttpApplication
     {
