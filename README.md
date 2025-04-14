@@ -26,8 +26,12 @@ Please follow security best practices before deploying any solution to Productio
 Create an issue to the github for any questions, support.
 
 ## Authors and acknowledgment
-Rajdeep Banerjee: Rajdeep Banerjee is a Senior Partner Solutions Architect at AWS helping strategic partners and clients in the AWS cloud migration and digital transformation journey. Rajdeep focuses on working with partners to provide technical guidance on AWS, collaborate with them to understand their technical requirements, and designing solutions to meet their specific needs. He is a member of Serverless technical field community. Rajdeep is based out of Richmond, Virginia.
-Lavanya Tangutur: Lavanya Tangutur serves as a Senior Technical Account Manager at Amazon Web Services (AWS) focused on helping customers build, deploy, and run secure, resilient, and cost-effective workloads on AWS. She combines her passion for coding with customer engagements to implement AWS best practices and solutions.
+
+### Rajdeep Banerjee: 
+Rajdeep Banerjee is a Senior Partner Solutions Architect at AWS helping strategic partners and clients in the AWS cloud migration and digital transformation journey. Rajdeep focuses on working with partners to provide technical guidance on AWS, collaborate with them to understand their technical requirements, and designing solutions to meet their specific needs. He is a member of Serverless technical field community. Rajdeep is based out of Richmond, Virginia.
+
+### Lavanya Tangutur: 
+Lavanya Tangutur serves as a Senior Technical Account Manager at Amazon Web Services (AWS) focused on helping customers build, deploy, and run secure, resilient, and cost-effective workloads on AWS. She combines her passion for coding with customer engagements to implement AWS best practices and solutions.
 
 ## Security
 
