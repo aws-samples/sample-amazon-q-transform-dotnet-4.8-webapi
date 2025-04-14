@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
 using System.Web.Http;
 using ProductsWebAPI.Models;
 using ProductsWebAPI.Service;
@@ -13,39 +12,70 @@ namespace ProductsWebAPI.Controllers
         private readonly IProductsService _productsService;
         public ProductsController(IProductsService productsService)
         {
-            _productsService = productsService;
+            _productsService = productsService ?? throw new ArgumentNullException(nameof(productsService));
         }
 
 
         [Route("api/products")]
         [HttpGet]
-        public IEnumerable<Product> ListProducts()
+        public IHttpActionResult ListProducts()
         {
-            //return products;
-            return _productsService.GetAllProducts();
+            try
+            {
+                var products = _productsService.GetAllProducts();
+                return Ok(products);
+            }
+            catch (Exception ex) {
+                return InternalServerError(ex);
+            }
         }
 
         [Route("api/products/{id:int}")]
         [HttpGet]
         public IHttpActionResult GetProduct(int id)
         {
-
-            var product = _productsService.GetProduct(id);
-            if (product == null)
+            //Validation
+            if (id <= 0)
             {
-                return NotFound();
+                return BadRequest("Invalid product ID. ID must be greater than 0.");
             }
-            return Ok(product);
+
+            try
+            {
+                var product = _productsService.GetProduct(id);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+                return Ok(product);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
 
         }
 
         // POST api/product
         [Route("api/products")]
         [HttpPost]
-        public void CreateProduct([FromBody] Product value)
+        public IHttpActionResult CreateProduct([FromBody] Product value)
         {
-            Debug.WriteLine(value);
-            _productsService.SaveProduct(value);
+            //Validation
+            if (value == null)
+            {
+                return BadRequest("Product data cannot be null");
+            }
+
+            try
+            {
+                _productsService.SaveProduct(value);
+                return Created($"api/products/{value.Id}", value);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
 
         }
 
@@ -53,20 +83,58 @@ namespace ProductsWebAPI.Controllers
 
         [Route("api/products/{id:int}")]
         [HttpPut]
-        public void UpdateProduct(int id, [FromBody] Product newValue)
+        public IHttpActionResult UpdateProduct(int id, [FromBody] Product newValue)
         {
-            Debug.WriteLine(newValue);
-            _productsService.UpdateProduct(id, newValue);
+            //Validation
+            if (id <= 0)
+            {
+                return BadRequest("Invalid product ID. ID must be greater than 0.");
+            }
+
+            if (newValue == null)
+            {
+                return BadRequest("Product data cannot be null");
+            }
+
+            try
+            {
+                //Check for existing product before update
+                var existingProduct = _productsService.GetProduct(id);
+                if (existingProduct == null)
+                {
+                    return NotFound();
+                }
+
+                _productsService.UpdateProduct(id, newValue);
+                return Ok(newValue);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
 
         }
 
         // DELETE api/products/5
         [Route("api/products/{id:int}")]
         [HttpDelete]
-        public void DeleteProduct(int id)
+        public IHttpActionResult DeleteProduct(int id)
         {
-            _productsService.DeleteProduct(id);
+            //Validation
+            if (id <= 0)
+            {
+                return BadRequest("Invalid product ID. ID must be greater than 0.");
+            }
 
+            try
+            {
+                _productsService.DeleteProduct(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
     }
 }

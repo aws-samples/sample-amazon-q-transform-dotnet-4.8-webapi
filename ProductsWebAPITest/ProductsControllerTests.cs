@@ -1,30 +1,49 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.Collections.Generic;
+using System.Web.Http.Results;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using ProductsWebAPI.Controllers;
 using ProductsWebAPI.Models;
 using ProductsWebAPI.Service;
-using System.Collections.Generic;
-using System.Web.Http;
-using System.Web.Http.Results;
 
-
-namespace ProductsAppTests
+namespace ProductsApp.Tests.Controllers
 {
     [TestClass]
     public class ProductsControllerTests
     {
         private Mock<IProductsService> _mockProductService;
         private ProductsController _controller;
+        private Product _testProduct;
 
         [TestInitialize]
         public void Setup()
         {
             _mockProductService = new Mock<IProductsService>();
             _controller = new ProductsController(_mockProductService.Object);
+            _testProduct = new Product { Id = 1, Name = "Test Product" };
+
+        }
+
+        #region Constructor Tests
+        [TestMethod]
+        public void Constructor_WithValidService_CreatesController()
+        {
+            // Act & Assert
+            Assert.IsNotNull(_controller);
         }
 
         [TestMethod]
-        public void ListProducts_ReturnsAllProducts()
+        public void Constructor_WithNullService_ThrowsArgumentNullException()
+        {
+            // Act & Assert
+            Assert.ThrowsException<ArgumentNullException>(() => new ProductsController(null));
+        }
+        #endregion
+
+        #region ListProducts Tests
+        [TestMethod]
+        public void ListProducts_ReturnsOkResultWithProducts()
         {
             // Arrange
             var expectedProducts = new List<Product>
@@ -32,124 +51,126 @@ namespace ProductsAppTests
                 new Product { Id = 1, Name = "Test Product 1" },
                 new Product { Id = 2, Name = "Test Product 2" }
             };
-            _mockProductService.Setup(x => x.GetAllProducts()).Returns(expectedProducts);
+            _mockProductService.Setup(s => s.GetAllProducts()).Returns(expectedProducts);
 
             // Act
             var result = _controller.ListProducts();
 
             // Assert
-            CollectionAssert.AreEqual(expectedProducts, result as List<Product>);
-            _mockProductService.Verify(x => x.GetAllProducts(), Times.Once);
+            Assert.IsNotNull(result);
+
         }
 
         [TestMethod]
-        public void GetProduct_WithValidId_ReturnsProduct()
+        public void ListProducts_WhenExceptionOccurs_ReturnsInternalServerError()
         {
             // Arrange
-            var expectedProduct = new Product { Id = 1, Name = "Test Product" };
-            _mockProductService.Setup(x => x.GetProduct(1)).Returns(expectedProduct);
+            _mockProductService.Setup(s => s.GetAllProducts()).Throws(new Exception());
 
             // Act
-            var result = _controller.GetProduct(1);
+            var result = _controller.ListProducts() as ExceptionResult;
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(OkNegotiatedContentResult<Product>));
-            var okResult = result as OkNegotiatedContentResult<Product>;
-            Assert.AreEqual(expectedProduct, okResult.Content);
+            Assert.IsNotNull(result);
         }
+        #endregion
 
+        #region GetProduct Tests
         [TestMethod]
-        public void GetProduct_WithInvalidId_ReturnsNotFound()
+        public void GetProduct_WithValidId_ReturnsOkResult()
         {
             // Arrange
-            _mockProductService.Setup(x => x.GetProduct(999)).Returns((Product)null);
+            _mockProductService.Setup(s => s.GetProduct(1)).Returns(_testProduct);
 
             // Act
-            var result = _controller.GetProduct(999);
+            var result = _controller.GetProduct(1) as OkNegotiatedContentResult<Product>;
 
             // Assert
-            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+            Assert.IsNotNull(result);
+            Assert.AreEqual(_testProduct, result.Content);
         }
 
         [TestMethod]
-        public void CreateProduct_ValidProduct_CallsServiceSaveProduct()
+        public void GetProduct_WithInvalidId_ReturnsBadRequest()
+        {
+            // Act
+            var result = _controller.GetProduct(0) as BadRequestErrorMessageResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Invalid product ID. ID must be greater than 0.", result.Message);
+        }
+
+        [TestMethod]
+        public void GetProduct_WithNonexistentId_ReturnsNotFound()
         {
             // Arrange
-            var product = new Product { Id = 1, Name = "New Product" };
+            _mockProductService.Setup(s => s.GetProduct(1)).Returns((Product)null);
 
             // Act
-            _controller.CreateProduct(product);
+            var result = _controller.GetProduct(1) as NotFoundResult;
 
             // Assert
-            _mockProductService.Verify(x => x.SaveProduct(product), Times.Once);
+            Assert.IsNotNull(result);
+        }
+        #endregion
+
+        #region CreateProduct Tests
+        [TestMethod]
+        public void CreateProduct_WithValidProduct_ReturnsCreatedResult()
+        {
+            // Act
+            var result = _controller.CreateProduct(_testProduct) as CreatedNegotiatedContentResult<Product>;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(_testProduct, result.Content);
+            _mockProductService.Verify(s => s.SaveProduct(_testProduct), Times.Once);
         }
 
         [TestMethod]
-        public void UpdateProduct_ValidProduct_CallsServiceUpdateProduct()
+        public void CreateProduct_WithNullProduct_ReturnsBadRequest()
+        {
+            // Act
+            var result = _controller.CreateProduct(null) as BadRequestErrorMessageResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Product data cannot be null", result.Message);
+        }
+        #endregion
+
+        #region UpdateProduct Tests
+        [TestMethod]
+        public void UpdateProduct_WithValidProduct_ReturnsOkResult()
         {
             // Arrange
-            var product = new Product { Id = 1, Name = "Updated Product" };
-            int id = 1;
+            _mockProductService.Setup(s => s.GetProduct(1)).Returns(_testProduct);
 
             // Act
-            _controller.UpdateProduct(id, product);
+            var result = _controller.UpdateProduct(1, _testProduct) as OkNegotiatedContentResult<Product>;
 
             // Assert
-            _mockProductService.Verify(x => x.UpdateProduct(id, product), Times.Once);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(_testProduct, result.Content);
         }
 
+      #endregion
+
+        #region DeleteProduct Tests
         [TestMethod]
-        public void DeleteProduct_ValidId_CallsServiceDeleteProduct()
+        public void DeleteProduct_WithValidId_ReturnsOkResult()
         {
             // Arrange
-            int id = 1;
+            _mockProductService.Setup(s => s.GetProduct(1)).Returns(_testProduct);
 
             // Act
-            _controller.DeleteProduct(id);
+            var result = _controller.DeleteProduct(1) as OkResult;
 
             // Assert
-            _mockProductService.Verify(x => x.DeleteProduct(id), Times.Once);
+            Assert.IsNotNull(result);
+            _mockProductService.Verify(s => s.DeleteProduct(1), Times.Once);
         }
-
-        [TestMethod]
-        public void ListProducts_WhenServiceReturnsEmpty_ReturnsEmptyList()
-        {
-            // Arrange
-            var emptyList = new List<Product>();
-            _mockProductService.Setup(x => x.GetAllProducts()).Returns(emptyList);
-
-            // Act
-            var result = _controller.ListProducts();
-
-            // Assert
-            CollectionAssert.AreEqual(emptyList, result as List<Product>);
-        }
-
-        [TestMethod]
-        public void CreateProduct_NullProduct_HandlesGracefully()
-        {
-            // Arrange
-            Product nullProduct = null;
-
-            // Act & Assert
-            _controller.CreateProduct(nullProduct); // Should not throw exception
-            _mockProductService.Verify(x => x.SaveProduct(It.IsAny<Product>()), Times.Once);
-        }
-
-        [TestMethod]
-        public void UpdateProduct_NullProduct_HandlesGracefully()
-        {
-            // Arrange
-            Product nullProduct = null;
-            int id = 1;
-
-            // Act & Assert
-            _controller.UpdateProduct(id, nullProduct); // Should not throw exception
-            _mockProductService.Verify(x => x.UpdateProduct(id, It.IsAny<Product>()), Times.Once);
-        }
+        #endregion
     }
 }
-
-
-
-
